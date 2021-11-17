@@ -149,7 +149,7 @@ func (m *Module) parseUserFromClaims(ctx context.Context, claims *oidc.Claims, i
 
 	// make sure claims.Name is defined since we'll be using that for the username
 	if claims.Name == "" {
-		return nil, errors.New("no name returned in claims")
+		claims.Name = strings.Split(claims.Email, "@")[0]
 	}
 
 	// check if we can just use claims.Name as-is

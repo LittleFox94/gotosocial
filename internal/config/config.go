@@ -241,10 +241,6 @@ func (c *Config) ParseCLIFlags(f KeyedFlags, version string) error {
 		c.StorageConfig.Backend = f.String(fn.StorageBackend)
 	}
 
-	if c.StorageConfig.BasePath == "" || f.IsSet(fn.StorageBasePath) {
-		c.StorageConfig.BasePath = f.String(fn.StorageBasePath)
-	}
-
 	if c.StorageConfig.ServeProtocol == "" || f.IsSet(fn.StorageServeProtocol) {
 		c.StorageConfig.ServeProtocol = f.String(fn.StorageServeProtocol)
 	}
@@ -255,6 +251,36 @@ func (c *Config) ParseCLIFlags(f KeyedFlags, version string) error {
 
 	if c.StorageConfig.ServeBasePath == "" || f.IsSet(fn.StorageServeBasePath) {
 		c.StorageConfig.ServeBasePath = f.String(fn.StorageServeBasePath)
+	}
+
+	// storage flags for local backend
+	if c.StorageConfig.Local.BasePath == "" || f.IsSet(fn.StorageBasePath) {
+		c.StorageConfig.Local.BasePath = f.String(fn.StorageBasePath)
+	}
+
+	// storage flags for s3 backend
+	if c.StorageConfig.S3.AccessKeyID == "" || f.IsSet(fn.StorageS3AccessKeyID) {
+		c.StorageConfig.S3.AccessKeyID = f.String(fn.StorageS3AccessKeyID)
+	}
+
+	if c.StorageConfig.S3.SecretAccessKey == "" || f.IsSet(fn.StorageS3SecretAccessKey) {
+		c.StorageConfig.S3.SecretAccessKey = f.String(fn.StorageS3SecretAccessKey)
+	}
+
+	if c.StorageConfig.S3.Endpoint == "" || f.IsSet(fn.StorageS3Endpoint) {
+		c.StorageConfig.S3.Endpoint = f.String(fn.StorageS3Endpoint)
+	}
+
+	if c.StorageConfig.S3.Bucket == "" || f.IsSet(fn.StorageS3Bucket) {
+		c.StorageConfig.S3.Bucket = f.String(fn.StorageS3Bucket)
+	}
+
+	if f.IsSet(fn.StorageS3UsePathStyle) {
+		c.StorageConfig.S3.UsePathStyle = f.Bool(fn.StorageS3UsePathStyle)
+	}
+
+	if f.IsSet(fn.StorageS3UseSSL) {
+		c.StorageConfig.S3.UseSSL = f.Bool(fn.StorageS3UseSSL)
 	}
 
 	// statuses flags
@@ -404,6 +430,13 @@ type Flags struct {
 	StorageServeHost     string
 	StorageServeBasePath string
 
+	StorageS3AccessKeyID     string
+	StorageS3SecretAccessKey string
+	StorageS3Endpoint        string
+	StorageS3Bucket          string
+	StorageS3UseSSL          string
+	StorageS3UsePathStyle    string
+
 	StatusesMaxChars           string
 	StatusesCWMaxChars         string
 	StatusesPollMaxOptions     string
@@ -468,6 +501,13 @@ type Defaults struct {
 	StorageServeProtocol string
 	StorageServeHost     string
 	StorageServeBasePath string
+
+	StorageS3AccessKeyID     string
+	StorageS3SecretAccessKey string
+	StorageS3Endpoint        string
+	StorageS3Bucket          string
+	StorageS3UseSSL          bool
+	StorageS3UsePathStyle    bool
 
 	StatusesMaxChars           int
 	StatusesCWMaxChars         int
@@ -535,6 +575,13 @@ func GetFlagNames() Flags {
 		StorageServeHost:     "storage-serve-host",
 		StorageServeBasePath: "storage-serve-base-path",
 
+		StorageS3AccessKeyID:     "s3-access-key-id",
+		StorageS3SecretAccessKey: "s3-secret-access-key",
+		StorageS3Endpoint:        "s3-endpoint",
+		StorageS3Bucket:          "s3-bucket",
+		StorageS3UseSSL:          "s3-use-ssl",
+		StorageS3UsePathStyle:    "s3-use-path-style",
+
 		StatusesMaxChars:           "statuses-max-chars",
 		StatusesCWMaxChars:         "statuses-cw-max-chars",
 		StatusesPollMaxOptions:     "statuses-poll-max-options",
@@ -601,6 +648,13 @@ func GetEnvNames() Flags {
 		StorageServeProtocol: "GTS_STORAGE_SERVE_PROTOCOL",
 		StorageServeHost:     "GTS_STORAGE_SERVE_HOST",
 		StorageServeBasePath: "GTS_STORAGE_SERVE_BASE_PATH",
+
+		StorageS3AccessKeyID:     "AWS_ACCESS_KEY_ID",
+		StorageS3SecretAccessKey: "AWS_SECRET_ACCESS_KEY",
+		StorageS3Endpoint:        "GTS_STORAGE_S3_ENDPOINT",
+		StorageS3Bucket:          "GTS_STORAGE_S3_BUCKET",
+		StorageS3UseSSL:          "GTS_STORAGE_S3_USE_SSL",
+		StorageS3UsePathStyle:    "GTS_STORAGE_S3_USE_PATH_STYLE",
 
 		StatusesMaxChars:           "GTS_STATUSES_MAX_CHARS",
 		StatusesCWMaxChars:         "GTS_STATUSES_CW_MAX_CHARS",

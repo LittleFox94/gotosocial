@@ -55,5 +55,41 @@ func storageFlags(flagNames, envNames config.Flags, defaults config.Defaults) []
 			Value:   defaults.StorageServeBasePath,
 			EnvVars: []string{envNames.StorageServeBasePath},
 		},
+		&cli.StringFlag{
+			Name:    flagNames.StorageS3AccessKeyID,
+			Usage:   "Access Key ID for S3 object storage",
+			Value:   defaults.StorageS3AccessKeyID,
+			EnvVars: []string{envNames.StorageS3AccessKeyID},
+		},
+		&cli.StringFlag{
+			Name:    flagNames.StorageS3SecretAccessKey,
+			Usage:   "Secret Access Key for S3 object storage",
+			Value:   defaults.StorageS3SecretAccessKey,
+			EnvVars: []string{envNames.StorageS3SecretAccessKey},
+		},
+		&cli.StringFlag{
+			Name:    flagNames.StorageS3Endpoint,
+			Usage:   "Endpoint to use for S3 object storage, can point to any S3-like implementation (only hostname and port)",
+			Value:   defaults.StorageS3Endpoint,
+			EnvVars: []string{envNames.StorageS3Endpoint},
+		},
+		&cli.StringFlag{
+			Name:    flagNames.StorageS3Bucket,
+			Usage:   "S3 bucket to use for media attachment storage",
+			Value:   defaults.StorageS3Bucket,
+			EnvVars: []string{envNames.StorageS3Bucket},
+		},
+		&cli.BoolFlag{
+			Name:    flagNames.StorageS3UseSSL,
+			Usage:   "Use SSL for S3 access",
+			Value:   defaults.StorageS3UseSSL,
+			EnvVars: []string{envNames.StorageS3UseSSL},
+		},
+		&cli.BoolFlag{
+			Name:    flagNames.StorageS3UsePathStyle,
+			Usage:   "Use legacy path-style S3 access instead of dns-style",
+			Value:   defaults.StorageS3UsePathStyle,
+			EnvVars: []string{envNames.StorageS3UsePathStyle},
+		},
 	}
 }

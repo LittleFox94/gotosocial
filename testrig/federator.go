@@ -19,13 +19,13 @@
 package testrig
 
 import (
-	"codeberg.org/gruf/go-store/kv"
 	"github.com/superseriousbusiness/gotosocial/internal/db"
 	"github.com/superseriousbusiness/gotosocial/internal/federation"
+	"github.com/superseriousbusiness/gotosocial/internal/storage"
 	"github.com/superseriousbusiness/gotosocial/internal/transport"
 )
 
 // NewTestFederator returns a federator with the given database and (mock!!) transport controller.
-func NewTestFederator(db db.DB, tc transport.Controller, storage *kv.KVStore) federation.Federator {
+func NewTestFederator(db db.DB, tc transport.Controller, storage storage.Storage) federation.Federator {
 	return federation.NewFederator(db, NewTestFederatingDB(db), tc, NewTestConfig(), NewTestTypeConverter(db), NewTestMediaHandler(db, storage))
 }

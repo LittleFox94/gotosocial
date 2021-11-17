@@ -21,6 +21,7 @@ package media
 import (
 	"errors"
 	"fmt"
+	"net/url"
 	"strings"
 	"time"
 
@@ -80,13 +81,24 @@ func (mh *mediaHandler) processHeaderOrAvi(imageBytes []byte, contentType string
 	}
 
 	URLbase := fmt.Sprintf("%s://%s%s", mh.config.StorageConfig.ServeProtocol, mh.config.StorageConfig.ServeHost, mh.config.StorageConfig.ServeBasePath)
-	originalURL := fmt.Sprintf("%s/%s/%s/original/%s.%s", URLbase, accountID, mediaType, newMediaID, extension)
-	smallURL := fmt.Sprintf("%s/%s/%s/small/%s.%s", URLbase, accountID, mediaType, newMediaID, extension)
 
 	// we store the original...
 	originalPath := fmt.Sprintf("%s/%s/%s/%s.%s", accountID, mediaType, Original, newMediaID, extension)
 	if err := mh.storage.Put(originalPath, original.image); err != nil {
 		return nil, fmt.Errorf("storage error: %s", err)
+	}
+
+	originalURL, err := mh.storage.URL(originalPath)
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving originalURL for icon: %w", err)
+	}
+
+	if !originalURL.IsAbs() {
+		originalURL, err = url.Parse(URLbase + originalURL.Path)
+
+		if err != nil {
+			return nil, fmt.Errorf("error building originalURL for icon: %w", err)
+		}
 	}
 
 	// and a thumbnail...
@@ -95,10 +107,23 @@ func (mh *mediaHandler) processHeaderOrAvi(imageBytes []byte, contentType string
 		return nil, fmt.Errorf("storage error: %s", err)
 	}
 
+	smallURL, err := mh.storage.URL(smallPath)
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving smallURL for icon: %w", err)
+	}
+
+	if !smallURL.IsAbs() {
+		smallURL, err = url.Parse(URLbase + smallURL.Path)
+
+		if err != nil {
+			return nil, fmt.Errorf("error building smallURL for icon: %w", err)
+		}
+	}
+
 	ma := &gtsmodel.MediaAttachment{
 		ID:        newMediaID,
 		StatusID:  "",
-		URL:       originalURL,
+		URL:       originalURL.String(),
 		RemoteURL: remoteURL,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
@@ -133,7 +158,7 @@ func (mh *mediaHandler) processHeaderOrAvi(imageBytes []byte, contentType string
 			ContentType: contentType,
 			FileSize:    len(small.image),
 			UpdatedAt:   time.Now(),
-			URL:         smallURL,
+			URL:         smallURL.String(),
 			RemoteURL:   "",
 		},
 		Avatar: isAvatar,

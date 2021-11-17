@@ -23,24 +23,35 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net/url"
 	"os"
 
 	"codeberg.org/gruf/go-store/kv"
 	"codeberg.org/gruf/go-store/storage"
 	"codeberg.org/gruf/go-store/util"
+
+	internalStorage "github.com/superseriousbusiness/gotosocial/internal/storage"
 )
 
+type testStorage struct {
+	*kv.KVStore
+}
+
+func (s *testStorage) URL(name string) (*url.URL, error) {
+	return url.Parse(name)
+}
+
 // NewTestStorage returns a new in memory storage with the default test config
-func NewTestStorage() *kv.KVStore {
+func NewTestStorage() internalStorage.Storage {
 	storage, err := kv.OpenStorage(&inMemStorage{storage: map[string][]byte{}, overwrite: false})
 	if err != nil {
 		panic(err)
 	}
-	return storage
+	return &testStorage{storage}
 }
 
 // StandardStorageSetup populates the storage with standard test entries from the given directory.
-func StandardStorageSetup(s *kv.KVStore, relativePath string) {
+func StandardStorageSetup(s internalStorage.Storage, relativePath string) {
 	storedA := newTestStoredAttachments()
 	a := NewTestAttachments()
 	for k, paths := range storedA {
@@ -97,8 +108,8 @@ func StandardStorageSetup(s *kv.KVStore, relativePath string) {
 }
 
 // StandardStorageTeardown deletes everything in storage so that it's clean for the next test
-func StandardStorageTeardown(s *kv.KVStore) {
-	iter, err := s.Iterator(nil)
+func StandardStorageTeardown(s internalStorage.Storage) {
+	iter, err := s.(*testStorage).KVStore.Iterator(nil)
 	if err != nil {
 		panic(err)
 	}

@@ -21,13 +21,13 @@ package media
 import (
 	"context"
 
-	"codeberg.org/gruf/go-store/kv"
 	apimodel "github.com/superseriousbusiness/gotosocial/internal/api/model"
 	"github.com/superseriousbusiness/gotosocial/internal/config"
 	"github.com/superseriousbusiness/gotosocial/internal/db"
 	"github.com/superseriousbusiness/gotosocial/internal/gtserror"
 	"github.com/superseriousbusiness/gotosocial/internal/gtsmodel"
 	"github.com/superseriousbusiness/gotosocial/internal/media"
+	"github.com/superseriousbusiness/gotosocial/internal/storage"
 	"github.com/superseriousbusiness/gotosocial/internal/typeutils"
 )
 
@@ -46,12 +46,12 @@ type processor struct {
 	tc           typeutils.TypeConverter
 	config       *config.Config
 	mediaHandler media.Handler
-	storage      *kv.KVStore
+	storage      storage.Storage
 	db           db.DB
 }
 
 // New returns a new media processor.
-func New(db db.DB, tc typeutils.TypeConverter, mediaHandler media.Handler, storage *kv.KVStore, config *config.Config) Processor {
+func New(db db.DB, tc typeutils.TypeConverter, mediaHandler media.Handler, storage storage.Storage, config *config.Config) Processor {
 	return &processor{
 		tc:           tc,
 		config:       config,

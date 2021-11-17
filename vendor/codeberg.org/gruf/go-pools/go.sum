@@ -1,0 +1,4 @@
+codeberg.org/gruf/go-bytes v1.0.1 h1:PnvbgUji90FP1kYzzyQSwXWw5gH+G84ylVO2QPnzjeo=
+codeberg.org/gruf/go-bytes v1.0.1/go.mod h1:1v/ibfaosfXSZtRdW2rWaVrDXMc9E3bsi/M9Ekx39cg=
+codeberg.org/gruf/go-fastpath v1.0.1 h1:1dx8JAUd8n8hrtFAC/30KMlcx5QpE6+iOktGJaoFNS4=
+codeberg.org/gruf/go-fastpath v1.0.1/go.mod h1:edveE/Kp3Eqi0JJm0lXYdkVrB28cNUkcb/bRGFTPqeI=

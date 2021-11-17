@@ -40,10 +40,13 @@ func TestDefault() *Config {
 		},
 		StorageConfig: &StorageConfig{
 			Backend:       defaults.StorageBackend,
-			BasePath:      defaults.StorageBasePath,
 			ServeProtocol: defaults.StorageServeProtocol,
 			ServeHost:     defaults.StorageServeHost,
 			ServeBasePath: defaults.StorageServeBasePath,
+
+			Local: LocalStorageConfig{
+				BasePath: defaults.StorageBasePath,
+			},
 		},
 		StatusesConfig: &StatusesConfig{
 			MaxChars:           defaults.StatusesMaxChars,
@@ -114,10 +117,13 @@ func Default() *Config {
 		},
 		StorageConfig: &StorageConfig{
 			Backend:       defaults.StorageBackend,
-			BasePath:      defaults.StorageBasePath,
 			ServeProtocol: defaults.StorageServeProtocol,
 			ServeHost:     defaults.StorageServeHost,
 			ServeBasePath: defaults.StorageServeBasePath,
+
+			Local: LocalStorageConfig{
+				BasePath: defaults.StorageBasePath,
+			},
 		},
 		StatusesConfig: &StatusesConfig{
 			MaxChars:           defaults.StatusesMaxChars,

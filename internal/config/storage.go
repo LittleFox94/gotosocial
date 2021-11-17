@@ -21,11 +21,7 @@ package config
 // StorageConfig contains configuration for storage and serving of media files and attachments
 type StorageConfig struct {
 	// Type of storage backend to use: currently only 'local' is supported.
-	// TODO: add S3 support here.
 	Backend string `yaml:"backend"`
-
-	// The base path for storing things. Should be an already-existing directory.
-	BasePath string `yaml:"basePath"`
 
 	// Protocol to use when *serving* media files from storage
 	ServeProtocol string `yaml:"serveProtocol"`
@@ -33,4 +29,30 @@ type StorageConfig struct {
 	ServeHost string `yaml:"serveHost"`
 	// Base path to use when *serving* media files from storage
 	ServeBasePath string `yaml:"serveBasePath"`
+
+	Local LocalStorageConfig `yaml:"local"`
+	S3    S3StorageConfig    `yaml:"s3"`
 }
+
+type LocalStorageConfig struct {
+	// The base path for storing things. Should be an already-existing directory.
+	BasePath string `yaml:"basePath"`
+}
+
+type S3StorageConfig struct {
+	AccessKeyID     string `yaml:"access_key_id"`
+	SecretAccessKey string `yaml:"secret_access_key"`
+	Endpoint        string `yaml:"endpoint"`
+	UseSSL          bool   `yaml:"use_ssl"`
+	Bucket          string `yaml:"bucket"`
+	Region          string `yaml:"region"`
+	UsePathStyle    bool   `yaml:"path_style"`
+}
+
+const (
+	// StorageBackendLocal stores uploaded media in the local filesystem, below the BasePath.
+	StorageBackendLocal = "local"
+
+	// StorageBackendS3 stores uploaded media on a S3-like object storage service.
+	StorageBackendS3 = "s3"
+)

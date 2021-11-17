@@ -26,12 +26,12 @@ import (
 	"strings"
 	"time"
 
-	"codeberg.org/gruf/go-store/kv"
 	"github.com/sirupsen/logrus"
 	"github.com/superseriousbusiness/gotosocial/internal/config"
 	"github.com/superseriousbusiness/gotosocial/internal/db"
 	"github.com/superseriousbusiness/gotosocial/internal/gtsmodel"
 	"github.com/superseriousbusiness/gotosocial/internal/id"
+	"github.com/superseriousbusiness/gotosocial/internal/storage"
 	"github.com/superseriousbusiness/gotosocial/internal/transport"
 )
 
@@ -86,11 +86,11 @@ type Handler interface {
 type mediaHandler struct {
 	config  *config.Config
 	db      db.DB
-	storage *kv.KVStore
+	storage storage.Storage
 }
 
 // New returns a new handler with the given config, db, and storage
-func New(config *config.Config, database db.DB, storage *kv.KVStore) Handler {
+func New(config *config.Config, database db.DB, storage storage.Storage) Handler {
 	return &mediaHandler{
 		config:  config,
 		db:      database,

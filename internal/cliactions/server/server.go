@@ -8,7 +8,6 @@ import (
 	"os/signal"
 	"syscall"
 
-	"codeberg.org/gruf/go-store/kv"
 	"github.com/sirupsen/logrus"
 	"github.com/superseriousbusiness/gotosocial/internal/api"
 	"github.com/superseriousbusiness/gotosocial/internal/api/client/account"
@@ -45,6 +44,7 @@ import (
 	"github.com/superseriousbusiness/gotosocial/internal/oidc"
 	"github.com/superseriousbusiness/gotosocial/internal/processing"
 	"github.com/superseriousbusiness/gotosocial/internal/router"
+	"github.com/superseriousbusiness/gotosocial/internal/storage"
 	timelineprocessing "github.com/superseriousbusiness/gotosocial/internal/timeline"
 	"github.com/superseriousbusiness/gotosocial/internal/transport"
 	"github.com/superseriousbusiness/gotosocial/internal/typeutils"
@@ -78,13 +78,14 @@ var Start cliactions.GTSAction = func(ctx context.Context, c *config.Config) err
 	timelineManager := timelineprocessing.NewManager(dbService, typeConverter, c)
 
 	// Open the storage backend
-	storage, err := kv.OpenFile(c.StorageConfig.BasePath, nil)
+	storage, err := storage.New(c.StorageConfig)
 	if err != nil {
 		return fmt.Errorf("error creating storage backend: %s", err)
 	}
 
 	// build backend handlers
 	mediaHandler := media.New(c, dbService, storage)
+
 	oauthServer := oauth.New(ctx, dbService)
 	transportController := transport.NewController(c, dbService, &federation.Clock{}, http.DefaultClient)
 	federator := federation.NewFederator(dbService, federatingDB, transportController, c, typeConverter, mediaHandler)
